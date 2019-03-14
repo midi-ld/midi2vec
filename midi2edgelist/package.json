@@ -1,0 +1,29 @@
+{
+  "name": "midi2edgelist",
+  "version": "1.0.0",
+  "description": "Convert midi files in edgelists",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/midi-ld/midi2vec.git"
+  },
+  "keywords": [
+    "midi"
+  ],
+  "author": "Pasquale Lisena <pasquale.lisena@eurecom.fr>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/midi-ld/midi2vec/issues"
+  },
+  "homepage": "https://github.com/midi-ld/midi2vec#readme",
+  "dependencies": {
+    "argparse": "^1.0.10",
+    "esm": "^3.2.17",
+    "fs-extra": "^7.0.1",
+    "klaw-sync": "^6.0.0",
+    "midiconvert": "^0.4.7"
+  }
+}
