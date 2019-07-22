@@ -1,6 +1,6 @@
 /* eslint no-use-before-define: "off" */
 import fs from 'fs-extra';
-import midiconvert from 'midiconvert';
+import * as midilib from '@tonejs/midi';
 
 let ROOT_FOLDER = '';
 const MAP_FILENAMES = [];
@@ -9,26 +9,30 @@ export default class Midi {
   constructor(file) {
     console.info(file);
 
+    this.file = file;
     this.id = filename2id(file);
-    const binary = fs.readFileSync(file, 'binary');
-    const midi = midiconvert.parse(binary);
+
+    const midi = new midilib.Midi(fs.readFileSync(this.file));
     // fs.writeJsonSync(`json/${this.id}.json`, midi);
     this.tracks = midi.tracks.filter(t => t.notes.length);
     this.header = midi.header;
   }
 
   get bpmClass() {
-    return Math.round(this.header.bpm / 10);
+    if (!this.header || !this.header.tempos) return null;
+    if (!this.header.tempos.length) return null;
+    return Math.round(this.header.tempos[0].bpm / 10);
   }
 
   get timeSignature() {
-    if (!this.header.timeSignature) return null;
-    return `timesig:${this.header.timeSignature.join('/')}`;
+    if (!this.header || !this.header.timeSignatures) return null;
+    if (!this.header.timeSignatures.length) return null;
+    return `timesig:${this.header.timeSignatures[0].timeSignature.join('/')}`;
   }
 
   get programs() {
     return this.tracks
-      .map(t => t.instrumentNumber)
+      .map(t => t.instrument.number)
       .filter(n => n > -1)
       .map(n => `http://purl.org/midi-ld/programs/${n}`);
   }
@@ -40,9 +44,15 @@ export default class Midi {
   * _pitches_ all the notes played
   */
   get noteGroups() {
-    const notes = this.tracks.map(t => t.notes).flat();
+    return this.getNoteGroups();
+  }
 
-    const alltimes = unique(notes.map(n => n.time)).sort();
+  getNoteGroups(num) {
+    const notes = this.tracks.map(t => t.notes).flat();
+    let alltimes = unique(notes.map(n => n.time)).sort();
+
+    if (num) alltimes = alltimes.slice(0, num);
+
     return alltimes.map((curtime) => {
       const curnotes = notes.filter(n => Math.abs(n.time - curtime) < 0.01);
       // {
@@ -92,7 +102,6 @@ function filename2id(file) {
     .trim()
     .replace(/ /g, '_');
 
-  MAP_FILENAMES.push({ file, id });
   return id;
 }
 

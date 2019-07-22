@@ -13,7 +13,10 @@ const Midi = require('./Midi.mjs').default;
 const parser = new ArgumentParser();
 parser.addArgument(['-i', '--input'], { help: 'Input directory containing MIDI files.', required: true });
 parser.addArgument(['-o', '--output'], { help: 'Output directory for the edgelists.', defaultValue: '../edgelist' });
+parser.addArgument(['-n', '--note-groups'], { help: 'Number of groups to be taken in account.', defaultValue: 300, type: 'int' });
 const args = parser.parseArgs();
+
+console.log(args);
 
 fs.ensureDirSync(args.output);
 Midi.rootFolder = args.input;
@@ -25,37 +28,48 @@ const paths = klawSync(args.input, {
   filter: p => p.path.endsWith('.mid'),
 }).map(p => p.path);
 
+// prepare output files
+const outputPaths = {
+  notes: path.join(args.output, 'notes.edgelist'),
+  program: path.join(args.output, 'program.edgelist'),
+  tempo: path.join(args.output, 'tempo.edgelist'),
+  signature: path.join(args.output, 'time.signature.edgelist'),
+  name: path.join(args.output, 'names.csv'),
+};
+const stream = {};
+Object.keys(outputPaths).forEach((p) => {
+  fs.unlinkSync(outputPaths[p]);
+  stream[p] = fs.openSync(outputPaths[p], 'w');
+});
+fs.writeSync(stream.name, 'id,filename\n');
 
-const midi = paths.map(file => new Midi(file));
 
-// notes edgelist
-console.info('\nwriting notes edgelist');
-const file = path.join(args.output, 'notes.edgelist');
-fs.writeFileSync(file, '');
-midi.forEach(m => m.noteGroups.slice(0, 600).forEach((note) => {
-  console.log(m.id);
-  fs.appendFileSync(file, `${m.id} ${note.id}\n`);
-  for (const p of note.pitches) fs.appendFileSync(file, `${note.id} ${p}\n`);
-  fs.appendFileSync(file, `${note.id} ${note.duration}\n`);
-  fs.appendFileSync(file, `${note.id} ${note.velocity}\n`);
-}));
+// parse function
+function parseMidi(file) {
+  const m = new Midi(file);
+  if (!m.tracks) return;
 
-// programs edgelist
-console.info('writing programs edgelist');
-const programEdges = midi.map(m => m.programs.map(p => `${m.id} ${p}`));
-fs.writeFile(path.join(args.output, 'program.edgelist'), programEdges.flat().join('\n'));
+  // notes
+  m.getNoteGroups(args.note_groups).forEach((note) => {
+    fs.writeSync(stream.notes, `${m.id} ${note.id}\n`);
+    for (const p of note.pitches) fs.writeSync(stream.notes, `${note.id} ${p}\n`);
+    fs.writeSync(stream.notes, `${note.id} ${note.duration}\n`);
+    fs.writeSync(stream.notes, `${note.id} ${note.velocity}\n`);
+  });
 
-// tempo edgelist
-console.info('writing tempo edgelist');
-const tempoEdges = midi.map(m => `${m.id} ${m.bpmClass}`);
-fs.writeFile(path.join(args.output, 'tempo.edgelist'), tempoEdges.join('\n'));
+  // programs
+  fs.writeSync(stream.program, m.programs.map(p => `${m.id} ${p}`).join('\n'));
+  fs.writeSync(stream.program, '\n');
 
-// time signature edgelist
-const timeSignatureEdges = midi
-  .filter(m => m.timeSignature)
-  .map(m => `${m.id} ${m.timeSignature}`);
-fs.writeFile(path.join(args.output, 'time.signature.edgelist'), timeSignatureEdges.join('\n'));
+  // tempo
+  if (m.bpmClass) fs.writeSync(stream.tempo, `${m.id} ${m.bpmClass}\n`);
 
-fs.writeFile(path.join(args.output, 'names.csv'), Midi.nameMaps);
+  // time signature
+  if (m.timeSignature) fs.writeSync(stream.signature, `${m.id} ${m.timeSignature}\n`);
+
+  fs.writeSync(stream.name, `${m.id},${m.file}\n`);
+}
+
+paths.forEach(parseMidi);
 
 console.log('done');

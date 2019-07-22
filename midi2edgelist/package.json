@@ -20,10 +20,11 @@
   },
   "homepage": "https://github.com/midi-ld/midi2vec#readme",
   "dependencies": {
+    "@tonejs/midi": "^2.0.6",
     "argparse": "^1.0.10",
-    "esm": "^3.2.17",
-    "fs-extra": "^7.0.1",
-    "klaw-sync": "^6.0.0",
-    "midiconvert": "^0.4.7"
+    "esm": "^3.2.25",
+    "fs-extra": "^8.1.0",
+    "fs-stream-sync": "^1.0.4",
+    "klaw-sync": "^6.0.0"
   }
 }
