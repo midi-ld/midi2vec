@@ -32,6 +32,6 @@ It uses [node2vec](https://cs.stanford.edu/people/jure/pubs/node2vec-kdd16.pdf) 
 
 # Publications
 
-Pasquale Lisena, Albert Meroño-Peñuela, Raphaël Troncy. **MIDI2vec: Learning MIDI Embeddings for
-Reliable Prediction of Symbolic Music Metadata**. Transactions of the International Society for Music
+Pasquale Lisena, Albert Meroño-Peñuela, Raphaël Troncy. *MIDI2vec: Learning MIDI Embeddings for
+Reliable Prediction of Symbolic Music Metadata*. Transactions of the International Society for Music
 Information Retrieval (TISMIR), under submission (2020).
