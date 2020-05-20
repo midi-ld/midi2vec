@@ -7,7 +7,8 @@ from nodevectors import Node2Vec
 
 def main(args):
     print(args)
-    edgelists = [qf for qf in os.listdir(args.input) if qf.endswith(".edgelist")]
+    edgelists = [qf for qf in os.listdir(args.input) \
+                 if qf.endswith('.edgelist') and not qf.startswith('_')]
     g = None
 
     print('loading edgelists...')
