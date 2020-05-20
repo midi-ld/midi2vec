@@ -1,7 +1,7 @@
 MIDI2vec: Learning Embeddings for MIDI Vector Space Representations
 ===================================================================
 
-Compute graph embeddings from MIDI. Pre-computed MIDI embeddings for reliable prediction of metadata (i.e. supervised learning) are available [here](https://github.com/pasqLisena/midi-embs)
+Compute graph embeddings from MIDI. Pre-computed MIDI embeddings for reliable prediction of metadata (i.e. supervised learning) are available [here](https://github.com/pasqLisena/midi-embs).
 
 
 # Usage
@@ -12,11 +12,11 @@ The library is composed by 2 parts.
 
 Convert a MIDI file in an edgelist.
 
-Requires [Node.js](https://nodejs.org/en/): 
+Requires [Node.js](https://nodejs.org/en/):
 
 
     cd midi2edgelist
-    
+
     npm install
 
     node index.js -i <midi_folder>

@@ -1,7 +1,8 @@
 import os
+import time
 import argparse
 import networkx as nx
-import entity2vec.node2vec as node2vec
+from nodevectors import Node2Vec
 
 
 def main(args):
@@ -12,7 +13,7 @@ def main(args):
     print('loading edgelists...')
     for eg in edgelists:
         print('- ' + eg)
-        h = nx.read_edgelist(os.path.join(args.input, eg), nodetype=str, create_using=nx.DiGraph())
+        h = nx.read_edgelist(os.path.join(args.input, eg), nodetype=str, create_using=nx.DiGraph(), delimiter=' ')
         for edge in h.edges():
             h[edge[0]][edge[1]]['weight'] = 1
 
@@ -23,20 +24,25 @@ def main(args):
     print('Nodes: %d' % nx.number_of_nodes(g))
     print('Edges: %d' % nx.number_of_edges(g))
 
-    node2vec_graph = node2vec.Node2Vec(args.directed,
-                                       args.preprocessing,
-                                       args.weighted,
-                                       args.p,
-                                       args.q,
-                                       args.walk_length,
-                                       args.num_walks,
-                                       args.dimensions,
-                                       args.window_size,
-                                       args.workers,
-                                       args.iter)
+    print('Start learning at %s' % time.asctime())
+    g2v = Node2Vec(
+        walklen=args.walk_length,
+        epochs=args.num_walks,
+        n_components=args.dimensions,
+        return_weight=args.p,
+        neighbor_weight=args.q,
+        threads=args.workers,
+        w2vparams={
+            "window": args.window_size,
+            "iter": args.iter,
+            "batch_words": 128
+        }
+    )
+    g2v.fit(g, verbose=True)
+    print('End learning at %s' % time.asctime())
 
-    node2vec_graph.G = g
-    node2vec_graph.learn_embeddings(args.output, 'text')
+    # Save model to gensim.KeyedVector format
+    g2v.save_vectors(args.output)
 
 
 def parse_args():
@@ -45,11 +51,8 @@ def parse_args():
     parser.add_argument('--input', nargs='?', default='./edgelist',
                         help='Input graph path')
 
-    parser.add_argument('--output', nargs='?', default='embeddings.txt',
+    parser.add_argument('--output', nargs='?', default='embeddings.bin',
                         help='emb file name')
-
-    parser.add_argument('--output_format', nargs='?', default='text',
-                        help='Format of the emb file. It accepts "binary" (default) or "text"')
 
     parser.add_argument('--walk_length', type=int, default=10,
                         help='Length of walk per source. Default is 10.')
@@ -58,22 +61,10 @@ def parse_args():
                         help='Number of walks per source. Default is 40.')
 
     parser.add_argument('--p', type=float, default=1,
-                        help='Return hyperparameter. Default is 1.')
+                        help='Return hyper-parameter. Default is 1.')
 
     parser.add_argument('--q', type=float, default=1,
-                        help='Inout hyperparameter. Default is 1.')
-
-    parser.add_argument('--weighted', dest='weighted', action='store_true',
-                        help='Boolean specifying (un)weighted. Default is unweighted.')
-    parser.set_defaults(weighted=False)
-
-    parser.add_argument('--directed', dest='directed', action='store_true',
-                        help='Graph is (un)directed. Default is directed.')
-    parser.set_defaults(directed=False)
-
-    parser.add_argument('--preprocessing', dest='preprocessing', action='store_true',
-                        help='Whether preprocess all transition probabilities or compute on the fly')
-    parser.set_defaults(preprocessing=False)
+                        help='Inout hyper-parameter. Default is 1.')
 
     parser.add_argument('--dimensions', type=int, default=100,
                         help='Number of dimensions. Default is 100.')

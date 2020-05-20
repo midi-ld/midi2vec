@@ -25,8 +25,8 @@ Midi.rootFolder = args.input;
 const paths = klawSync(args.input, {
   nodir: true,
   traverseAll: true,
-  filter: p => p.path.endsWith('.mid'),
-}).map(p => p.path);
+  filter: (p) => p.path.endsWith('.midi') || p.path.endsWith('.mid'),
+}).map((p) => p.path);
 
 // prepare output files
 const outputPaths = {
@@ -38,7 +38,7 @@ const outputPaths = {
 };
 const stream = {};
 Object.keys(outputPaths).forEach((p) => {
-  fs.unlinkSync(outputPaths[p]);
+  if (fs.existsSync(outputPaths[p])) fs.unlinkSync(outputPaths[p]);
   stream[p] = fs.openSync(outputPaths[p], 'w');
 });
 fs.writeSync(stream.name, 'id,filename\n');
@@ -58,7 +58,7 @@ function parseMidi(file) {
   });
 
   // programs
-  fs.writeSync(stream.program, m.programs.map(p => `${m.id} ${p}`).join('\n'));
+  fs.writeSync(stream.program, m.programs.map((p) => `${m.id} ${p}`).join('\n'));
   fs.writeSync(stream.program, '\n');
 
   // tempo
@@ -67,7 +67,7 @@ function parseMidi(file) {
   // time signature
   if (m.timeSignature) fs.writeSync(stream.signature, `${m.id} ${m.timeSignature}\n`);
 
-  fs.writeSync(stream.name, `${m.id},${m.file}\n`);
+  fs.writeSync(stream.name, `${m.id},"${m.file}"\n`);
 }
 
 paths.forEach(parseMidi);

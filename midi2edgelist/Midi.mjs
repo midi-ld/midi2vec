@@ -14,7 +14,7 @@ export default class Midi {
 
     const midi = new midilib.Midi(fs.readFileSync(this.file));
     // fs.writeJsonSync(`json/${this.id}.json`, midi);
-    this.tracks = midi.tracks.filter(t => t.notes.length);
+    this.tracks = midi.tracks.filter((t) => t.notes.length);
     this.header = midi.header;
   }
 
@@ -32,9 +32,9 @@ export default class Midi {
 
   get programs() {
     return this.tracks
-      .map(t => t.instrument.number)
-      .filter(n => n > -1)
-      .map(n => `http://purl.org/midi-ld/programs/${n}`);
+      .map((t) => t.instrument.number)
+      .filter((n) => n > -1)
+      .map((n) => `http://purl.org/midi-ld/programs/${n}`);
   }
 
   /* Returns groups of notes which start in the same time (<0.01 of time diff).
@@ -48,13 +48,13 @@ export default class Midi {
   }
 
   getNoteGroups(num) {
-    const notes = this.tracks.map(t => t.notes).flat();
-    let alltimes = unique(notes.map(n => n.time)).sort();
+    const notes = this.tracks.map((t) => t.notes).flat();
+    let alltimes = unique(notes.map((n) => n.time)).sort();
 
     if (num) alltimes = alltimes.slice(0, num);
 
     return alltimes.map((curtime) => {
-      const curnotes = notes.filter(n => Math.abs(n.time - curtime) < 0.01);
+      const curnotes = notes.filter((n) => Math.abs(n.time - curtime) < 0.01);
       // {
       //   "name": "A4",
       //   "midi": 69,
@@ -63,13 +63,13 @@ export default class Midi {
       //   "duration": 0.5576922333333325
       // }
 
-      const pitches = unique(curnotes.map(x => x.midi)).sort();
+      const pitches = unique(curnotes.map((x) => x.midi)).sort();
       if (!pitches.length) return null;
 
-      let maxduration = Math.max(...curnotes.map(n => n.duration));
+      let maxduration = Math.max(...curnotes.map((n) => n.duration));
       maxduration = Math.round(maxduration * 10);
 
-      let velocity = average(curnotes.map(x => x.velocity));
+      let velocity = average(curnotes.map((x) => x.velocity));
       velocity = Math.round(velocity * 10);
 
       const id = `g${hashCode(`${pitches.join(':')}|${maxduration}`)}`;
@@ -79,9 +79,9 @@ export default class Midi {
         id,
         duration: `dur:${maxduration}`,
         velocity: `vel:${velocity}`,
-        pitches: pitches.flat().map(p => `http://purl.org/midi-ld/notes/${p}`),
+        pitches: pitches.flat().map((p) => `http://purl.org/midi-ld/notes/${p}`),
       };
-    }).filter(x => x != null);
+    }).filter((x) => x != null);
   }
 
   static set rootFolder(rootFolder) {
@@ -89,20 +89,19 @@ export default class Midi {
   }
 
   static get nameMaps() {
-    const csv = MAP_FILENAMES.map(m => `${m.id},${m.file}`);
+    const csv = MAP_FILENAMES.map((m) => `${m.id},"${m.file}"`);
     return `id,filename\n${csv.join('\n')}`;
   }
 }
 
 function filename2id(file) {
-  const id = file.replace(ROOT_FOLDER, '')
+  return file.replace(ROOT_FOLDER, '')
     .replace(/^\//, '')
-    .replace('.mid', '')
+    .replace(/\.midi?$/i, '')
+    .replace(',', '+')
     .replace(/[\\/]/g, '-')
     .trim()
     .replace(/ /g, '_');
-
-  return id;
 }
 
 function unique(list) {
