@@ -7,12 +7,16 @@ from nodevectors import Node2Vec
 
 def main(args):
     print(args)
-    edgelists = [qf for qf in os.listdir(args.input) \
+    edgelists = [qf for qf in os.listdir(args.input)
                  if qf.endswith('.edgelist') and not qf.startswith('_')]
     g = None
 
+    exclude = args.exclude or []
+
     print('loading edgelists...')
     for eg in edgelists:
+        if eg in exclude or eg.rsplit('.', 1)[0] in exclude:
+            continue
         print('- ' + eg)
         h = nx.read_edgelist(os.path.join(args.input, eg), nodetype=str, create_using=nx.DiGraph(), delimiter=' ')
         for edge in h.edges():
@@ -30,8 +34,8 @@ def main(args):
         walklen=args.walk_length,
         epochs=args.num_walks,
         n_components=args.dimensions,
-        return_weight=args.p,
-        neighbor_weight=args.q,
+        return_weight=1 / args.p,
+        neighbor_weight=1 / args.q,
         threads=args.workers,
         w2vparams={
             "window": args.window_size,
@@ -49,10 +53,10 @@ def main(args):
 def parse_args():
     parser = argparse.ArgumentParser(description="Run edgelist 2 vec.")
 
-    parser.add_argument('--input', nargs='?', default='./edgelist',
+    parser.add_argument('-i', '--input', default='./edgelist',
                         help='Input graph path')
 
-    parser.add_argument('--output', nargs='?', default='embeddings.bin',
+    parser.add_argument('-o', '--output', default='embeddings.bin',
                         help='emb file name')
 
     parser.add_argument('--walk_length', type=int, default=10,
@@ -61,10 +65,10 @@ def parse_args():
     parser.add_argument('--num_walks', type=int, default=40,
                         help='Number of walks per source. Default is 40.')
 
-    parser.add_argument('--p', type=float, default=1,
+    parser.add_argument('-p', type=float, default=.1,
                         help='Return hyper-parameter. Default is 1.')
 
-    parser.add_argument('--q', type=float, default=1,
+    parser.add_argument('-q', type=float, default=.1,
                         help='Inout hyper-parameter. Default is 1.')
 
     parser.add_argument('--dimensions', type=int, default=100,
@@ -78,6 +82,9 @@ def parse_args():
 
     parser.add_argument('--workers', type=int, default=8,
                         help='Number of parallel workers. Default is 8.')
+
+    parser.add_argument('--exclude', nargs='+',
+                        help='Edgelists to exclude')
 
     return parser.parse_args()
 

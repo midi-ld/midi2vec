@@ -98,7 +98,7 @@ function filename2id(file) {
   return file.replace(ROOT_FOLDER, '')
     .replace(/^\//, '')
     .replace(/\.midi?$/i, '')
-    .replace(',', '+')
+    .replace(/,/g, '+')
     .replace(/[\\/]/g, '-')
     .trim()
     .replace(/ /g, '_');

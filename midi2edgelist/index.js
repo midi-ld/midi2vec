@@ -25,7 +25,7 @@ Midi.rootFolder = args.input;
 const paths = klawSync(args.input, {
   nodir: true,
   traverseAll: true,
-  filter: (p) => p.path.endsWith('.midi') || p.path.endsWith('.mid'),
+  filter: (p) => p.path.match(/\.midi?$/i),
 }).map((p) => p.path);
 
 // prepare output files
@@ -42,7 +42,6 @@ Object.keys(outputPaths).forEach((p) => {
   stream[p] = fs.openSync(outputPaths[p], 'w');
 });
 fs.writeSync(stream.name, 'id,filename\n');
-
 
 // parse function
 function parseMidi(file) {
