@@ -38,9 +38,12 @@ def main(args):
         neighbor_weight=1 / args.q,
         threads=args.workers,
         w2vparams={
-            "window": args.window_size,
-            "iter": args.iter,
-            "batch_words": 128
+            'window': args.window_size,
+            'iter': args.iter,
+            'batch_words': 128,
+            'min_count': 0,
+            'negative': 25,
+            'sg': 1
         }
     )
     g2v.fit(g, verbose=True)
@@ -65,10 +68,10 @@ def parse_args():
     parser.add_argument('--num_walks', type=int, default=40,
                         help='Number of walks per source. Default is 40.')
 
-    parser.add_argument('-p', type=float, default=.1,
+    parser.add_argument('-p', type=float, default=1,
                         help='Return hyper-parameter. Default is 1.')
 
-    parser.add_argument('-q', type=float, default=.1,
+    parser.add_argument('-q', type=float, default=1,
                         help='Inout hyper-parameter. Default is 1.')
 
     parser.add_argument('--dimensions', type=int, default=100,

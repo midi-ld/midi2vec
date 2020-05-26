@@ -13,7 +13,7 @@ const Midi = require('./Midi.mjs').default;
 const parser = new ArgumentParser();
 parser.addArgument(['-i', '--input'], { help: 'Input directory containing MIDI files.', required: true });
 parser.addArgument(['-o', '--output'], { help: 'Output directory for the edgelists.', defaultValue: '../edgelist' });
-parser.addArgument(['-n', '--note-groups'], { help: 'Number of groups to be taken in account.', defaultValue: 300, type: 'int' });
+parser.addArgument(['-n', '--note-groups'], { help: 'Number of groups to be taken in account.', type: 'int' });
 const args = parser.parseArgs();
 
 console.log(args);
