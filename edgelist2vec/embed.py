@@ -57,10 +57,10 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Run edgelist 2 vec.")
 
     parser.add_argument('-i', '--input', default='./edgelist',
-                        help='Input graph path')
+                        help='Input graph (edgelists) path')
 
     parser.add_argument('-o', '--output', default='embeddings.bin',
-                        help='emb file name')
+                        help='Output file name')
 
     parser.add_argument('--walk_length', type=int, default=10,
                         help='Length of walk per source. Default is 10.')
@@ -80,11 +80,11 @@ def parse_args():
     parser.add_argument('--window-size', type=int, default=5,
                         help='Context size for optimization. Default is 5.')
 
-    parser.add_argument('--iter', default=5, type=int,
-                        help='Number of epochs in SGD')
+    parser.add_argument('--iter', type=int, default=5,
+                        help='Number of epochs in word2vec')
 
-    parser.add_argument('--workers', type=int, default=8,
-                        help='Number of parallel workers. Default is 8.')
+    parser.add_argument('--workers', type=int, default=0,
+                        help='Number of parallel workers. Default is 0 (full use).')
 
     parser.add_argument('--exclude', nargs='+',
                         help='Edgelists to exclude')
