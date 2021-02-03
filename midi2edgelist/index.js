@@ -11,11 +11,11 @@ const Midi = require('./Midi.mjs').default;
 
 // parse arguments
 const parser = new ArgumentParser();
-parser.addArgument(['-i', '--input'], { help: 'Input directory containing MIDI files.', required: true });
-parser.addArgument(['-o', '--output'], { help: 'Output directory for the edgelists.', defaultValue: '../edgelist' });
-parser.addArgument(['-n', '--note-groups'], { help: 'Number of groups to be taken in account.', type: 'int' });
-parser.addArgument(['--ignore-drums'], { help: 'If set, ignore channel 10, reserved to drumset.', action: 'store_true', default: false });
-const args = parser.parseArgs();
+parser.addArgument('-i', '--input', { help: 'Input directory containing MIDI files.', required: true });
+parser.addArgument('-o', '--output', { help: 'Output directory for the edgelists.', default: '../edgelist' });
+parser.addArgument('-n', '--note-groups', { help: 'Number of groups to be taken in account.', type: 'int' });
+parser.addArgument('--ignore-drums', { help: 'If set, ignore channel 10, reserved to drumset.', action: 'store_true', default: false });
+const args = parser.parse_args();
 
 console.log(args);
 
