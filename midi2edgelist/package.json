@@ -20,16 +20,19 @@
   },
   "homepage": "https://github.com/midi-ld/midi2vec#readme",
   "dependencies": {
-    "@tonejs/midi": "2.0.23",
-    "argparse": "^1.0.10",
+    "@tonejs/midi": "2.0.25",
+    "argparse": "^2.0.1",
     "esm": "^3.2.25",
-    "fs-extra": "^9.0.0",
-    "fs-stream-sync": "^1.0.4",
+    "fs-extra": "^9.1.0",
+    "fs-stream-sync": "^2.0.2",
     "klaw-sync": "^6.0.0"
   },
   "devDependencies": {
-    "eslint": "^7.1.0",
-    "eslint-config-airbnb": "^18.1.0",
-    "eslint-plugin-import": "^2.20.2"
+    "eslint": "^7.19.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-react-hooks": "^4.2.0"
   }
 }

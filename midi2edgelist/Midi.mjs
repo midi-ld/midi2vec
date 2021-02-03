@@ -47,8 +47,11 @@ export default class Midi {
     return this.getNoteGroups();
   }
 
-  getNoteGroups(num) {
-    const notes = this.tracks.map((t) => t.notes).flat();
+  getNoteGroups(num, ignore_drums = false) {
+    let trk = this.tracks;
+    if (ignore_drums) trk = trk.filter(t => t.channel != 10);
+
+    const notes = trk.map((t) => t.notes).flat();
     let alltimes = unique(notes.map((n) => n.time)).sort();
 
     if (num) alltimes = alltimes.slice(0, num);

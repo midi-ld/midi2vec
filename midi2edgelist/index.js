@@ -14,6 +14,7 @@ const parser = new ArgumentParser();
 parser.addArgument(['-i', '--input'], { help: 'Input directory containing MIDI files.', required: true });
 parser.addArgument(['-o', '--output'], { help: 'Output directory for the edgelists.', defaultValue: '../edgelist' });
 parser.addArgument(['-n', '--note-groups'], { help: 'Number of groups to be taken in account.', type: 'int' });
+parser.addArgument(['--ignore-drums'], { help: 'If set, ignore channel 10, reserved to drumset.', action: 'store_true', default: false });
 const args = parser.parseArgs();
 
 console.log(args);
@@ -43,13 +44,19 @@ Object.keys(outputPaths).forEach((p) => {
 });
 fs.writeSync(stream.name, 'id,filename\n');
 
-// parse function
 function parseMidi(file) {
-  const m = new Midi(file);
+  // parse function
+  let m;
+  try {
+    m = new Midi(file);
+  } catch (e) {
+    console.error(e);
+    return;
+  }
   if (!m.tracks) return;
 
   // notes
-  m.getNoteGroups(args.note_groups).forEach((note) => {
+  m.getNoteGroups(args.note_groups, args.ignore_drums).forEach((note) => {
     fs.writeSync(stream.notes, `${m.id} ${note.id}\n`);
     for (const p of note.pitches) fs.writeSync(stream.notes, `${note.id} ${p}\n`);
     fs.writeSync(stream.notes, `${note.id} ${note.duration}\n`);

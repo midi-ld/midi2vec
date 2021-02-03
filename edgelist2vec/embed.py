@@ -44,9 +44,10 @@ def main(args):
             'min_count': 0,
             'negative': 25,
             'sg': 1
-        }
+        },
+        verbose=True
     )
-    g2v.fit(g, verbose=True)
+    g2v.fit(g)
     print('End learning at %s' % time.asctime())
 
     # Save model to gensim.KeyedVector format
