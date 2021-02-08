@@ -55,5 +55,4 @@ Optional arguments:
 # Publications
 
 Pasquale Lisena, Albert Meroño-Peñuela, Raphaël Troncy. *MIDI2vec: Learning MIDI Embeddings for
-Reliable Prediction of Symbolic Music Metadata*. Transactions of the International Society for Music
-Information Retrieval (TISMIR), under submission (2020).
+Reliable Prediction of Symbolic Music Metadata*, under submission (2021).
