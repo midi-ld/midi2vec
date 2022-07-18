@@ -3,11 +3,10 @@ MIDI2vec: Learning Embeddings for MIDI Vector Space Representations
 
 Compute graph embeddings from MIDI.
 
-This library is described in detail in the following paper
+This library is described in detail in the following paper ([bib](http://pasqlisena.github.io/publication/lisena2021midi2vec.bib))
 
-> Pasquale Lisena, Albert Meroño-Peñuela, Raphaël Troncy. **MIDI2vec: Learning MIDI Embeddings for
-> Reliable Prediction of Symbolic Music Metadata**, to appear in *Semantic Web Journal, Special Issue on Deep Learning for Knowledge Graphs*, 2021.
-> http://www.semantic-web-journal.net/content/midi2vec-learning-midi-embeddings-reliable-prediction-symbolic-music-metadata-0
+> Lisena P., Meroño-Peñuela A. & Troncy R. MIDI2vec: Learning MIDI Embeddings for Reliable Prediction of Symbolic Music Metadata. In Semantic Web Journal, Special issue on Deep Learning for Knowledge Graphs, vol.13, no.3, pp. 357-377, IOSPress, 6 April 2022
+> http://doi.org/10.3233/SW-210446
 
 The experiments described in the paper are available [here](https://github.com/pasqLisena/midi-embs).
 
