@@ -41,6 +41,8 @@ The output is formed by 4 edgelist (notes, program, tempo and time signature) an
 
 It uses [node2vec](https://cs.stanford.edu/people/jure/pubs/node2vec-kdd16.pdf) for computing the embeddings from the egelists.
 
+It requires Python 3.8.
+
     pip install -r edgelist2vec/requirements.txt
 
     python edgelist2vec/embed.py

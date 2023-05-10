@@ -1,2 +1,3 @@
 nodevectors
-networkx
+networkx==2.8.8
+gensim==3.6
