@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "MIDI2vec"
+url: https://github.com/midi-ld/midi2vec
+date-released: 2022-04-06
+type: software
+preferred-citation:
+  type: article
+  authors:
+  - family-names: "Lisena"
+    given-names: "Pasquale"
+    orcid: "https://orcid.org/0000-0003-3094-5585"
+    email: pasquale.lisena@eurecom.fr
+  - family-names: "Meroño-Peñuela"
+    given-names: "Albert"
+    orcid: "https://orcid.org/0000-0003-4646-5842"
+  - family-names: "Troncy"
+    given-names: "Raphael"
+    orcid: "https://orcid.org/0000−0003−0457−1436"
+  doi: "10.3233/SW-210446"
+  title: "MIDI2vec: Learning MIDI embeddings for reliable prediction of symbolic music metadata"
+  journal: "Semantic Web"
+  month: 04
+  year: 2022
+  publisher:
+  - name: "IOS Press"
+  volume: 13,
+  issn: "2210-4968"
+}
+
